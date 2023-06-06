@@ -1,0 +1,41 @@
+# kubernetes config file
+apiVersion: apps/v1
+# kind of kubernetes object u want to create
+kind: Deployment
+metadata:
+  name: firstdeploy
+  labels:
+    group: example
+#  define how this will be configured.
+spec:
+  # number of pods
+  replicas: 1
+  selector:
+    # controlled by this deployment
+    matchLabels:
+      app: first-app
+      tier: backend
+    # matchExpressions:
+    # operator In means select all pods that have a value in the values range,
+    # - { key: app, operator: In, values: [second-app, first-app] }
+  # by default the kind is a pod so we dont need to include it here
+  template:
+    # pod is an object so we need metadata on it
+    metadata:
+      labels:
+        app: first-app
+        tier: backend
+
+        # specification of individual pods
+    spec:
+      # design how pod should be configured
+      containers:
+        # multiple containers for pods by adding multiple dashes
+        - name: second-node
+          image: juliangabriel/kubernetesfirst:3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            initialDelaySeconds: 5
